@@ -1,0 +1,9 @@
+URL being used for PREPARE:  http://169.254.7.100/getjp
+404 error for 'prepare'
+
+URL being used for CSV download:  http://169.254.7.100/export_min.csv
+Error in main URL CSV download request loop
+
+This request took:  1.11848402023  seconds.
+IP address used:  169.254.7.100  and inverter type:  refusol
+False

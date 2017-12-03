@@ -47,9 +47,10 @@ REFUSOL = 'refusol'
 SMA = 'sma'
 ABB = 'abb'
 
+
 # These next items detail the number of items in a **RAW** event line
 SMA_HEADER_ITEMS = 12
-ABB_HEADER_ITEMS = 12
+ABB_HEADER_ITEMS = 13
 REFUSOL_HEADER_ITEMS = 11
 
 #~~~~~~~~~~~~~~~~~~~   START Functions ~~~~~~~~~~~~~~~~~~~~~~~
@@ -133,6 +134,9 @@ def fix_time(time):
 # Eg; 27/01/17;2:30:00 PM;1;941;4546;7;0;37301;228;252;4457;3720
 def SMA_line(line):
 	
+	if (DEBUG >= 2):
+		print "Raw SMA line: ",line
+
 	date,time,inverter,power,daily,status,error,pdc1,udc1,uac,idc1,iac = line.split(';')
 	# Date and time will be in the format: 27/01/17;1:40:00 PM or 27.01.17;1:40:00 PM
 	# Convert the date and time to format: 2017-01-29T13:00:00
@@ -144,6 +148,9 @@ def SMA_line(line):
 	return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
 					  str(error) + "," + str(pdc1) + "," + str(udc1) + "," + str(uac) + "," + str(idc1) + "," + str(iac) + "\n"
 	
+	if (DEBUG >= 2):
+		print "Writing the SMA line: ",return_line
+
 	return return_line
 
 # This function is for Refusol inverters
@@ -152,6 +159,9 @@ def SMA_line(line):
 # Eg; 01.04.17;12:00:00;1;12703;24000;4;0;12935;565;52;235;
 def REFUSOL_line(line):
 	
+	if (DEBUG >= 2):
+		print "Raw Refusol line: ",line
+
 	date,time,inverter,power,daily,status,error,pdc1,udc1,temperature,uac = line.split(';')
 	# Date and time will be in the format: 01.04.17;12:05:00 or 01.04.17;04:25:00
 	# Convert the date and time to format: 2017-01-29T13:00:00
@@ -162,6 +172,9 @@ def REFUSOL_line(line):
 	return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
 					  str(error) + "," + str(pdc1) + "," + str(udc1) + "," + str(temperature) + "," + str(uac) + "\n"
 	
+	if (DEBUG >= 2):
+		print "Writing the Resfusol line: ",return_line
+
 	return return_line
 
 
@@ -171,7 +184,10 @@ def REFUSOL_line(line):
 # Eg; 04.04.17;13:25:00;1;20119;43722;6;0;11275;9359;497;414;48
 def ABB_line(line):
 	
-	date,time,inverter,power,daily,status,error,pdc1,pdc2,udc1,udc2,temperature = line.split(';')
+	if (DEBUG >= 2):
+		print "Raw ABB line: ",line
+
+	date,time,inverter,power,daily,status,error,pdc1,pdc2,udc1,udc2,temperature,uac = line.split(';')
 	# Date and time will be in the format: 04.04.17;12:05:00 or 01.04.17;04:25:00
 	# Convert the date and time to format: 2017-01-29T13:00:00
 	# ABB has no problems with date and time
@@ -179,7 +195,11 @@ def ABB_line(line):
 	new_datetime = datetime.datetime.strptime(date + " " + time, '%d.%m.%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
 
 	return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
-					  str(error) + "," + str(pdc1) + "," + str(pdc2) + "," + str(udc1) + "," + str(udc2) + "," + str(temperature) + "\n"
+					  str(error) + "," + str(pdc1) + "," + str(pdc2) + "," + str(udc1) + "," + str(udc2) + "," + str(temperature) + "," + \
+					  str(uac) + "\n"
+
+	if (DEBUG >= 2):
+		print "Writing the ABB line: ",return_line
 	
 	return return_line
 
@@ -223,11 +243,12 @@ def check_PIDFILE(pidfile):
 # This function will query the solar-log CSV file
 def query_csv(current, ip_addr):
 
+	success = False
+
 	url = 'http://' + ip_addr + '/export_min.csv'
 	if (DEBUG >= 2):		
 		print "URL being used for CSV download: ",url
 
-	success = False
 	try:
 		filew = open(current, "w")
 
@@ -271,12 +292,21 @@ def split_inverters(line, inverter_type):
 	length = len(items)
 	remainder = length % item_number
 	whole = length / item_number
-	# Once the date and time have been removed, the number of items in the line should be divisible by 9
+
+	if (DEBUG >= 2):
+		print "Length: ",length
+		print "Whole: ",whole
+		print "Items: ",items
+		print "Inverter type: ",inverter_type
+
+	# Once the date and time have been removed, the number of items in the line should be divisible by the item_number
 	# If so, process each inverter line separately
 	# Else, report an error
 	if (remainder == 0):
 		for run in range(whole):
 			inverter_slice = items[:item_number]
+			if (DEBUG >= 2):
+				print "Inverter slice: ",inverter_slice
 			del items[:item_number]
 			inverter_slice.insert(0, time)
 			inverter_slice.insert(0, date)
@@ -284,12 +314,20 @@ def split_inverters(line, inverter_type):
 			inverter_number = inverter_slice[2]
 			if (inverter_type == REFUSOL):
 				converted_line = REFUSOL_line(inverter_line)
+				if (DEBUG >= 2):
+					print "Split line: ",converted_line
 				write_log(inverter_type, inverter_number, REFUSOL_LOG_HEADER, converted_line)
-			if (inverter_type == SMA):
+
+			elif (inverter_type == SMA):
 				converted_line = SMA_line(inverter_line)
+				if (DEBUG >= 2):
+					print "Split line: ",converted_line
 				write_log(inverter_type, inverter_number, SMA_LOG_HEADER, converted_line)
-			if (inverter_type == ABB):
+
+			elif (inverter_type == ABB):
 				converted_line = ABB_line(inverter_line)
+				if (DEBUG >= 2):
+					print "Split line: ",converted_line
 				write_log(inverter_type, inverter_number, ABB_LOG_HEADER, converted_line)
 
 
@@ -423,8 +461,6 @@ if check_PIDFILE(pidfile):
 start_time = time.time()
 # Issue a query to get the solar-log to 'prepare' the CSV file
 prepare(ip_address)
-
-success = False
 
 # Try to download the CSV file from the solar-log device	
 success = query_csv(DIR + CURRENT, ip_address)
