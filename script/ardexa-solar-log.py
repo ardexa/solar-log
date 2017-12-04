@@ -88,13 +88,13 @@ def SMA_line(line, debug):
 	if (debug >= 2):
 		print "Raw SMA line: ",line
 
-	date,time,inverter,power,daily,status,error,pdc1,udc1,uac,idc1,iac = line.split(';')
+	date_val,time_val,inverter,power,daily,status,error,pdc1,udc1,uac,idc1,iac = line.split(';')
 
 	# Date and time will be in the format: 27/01/17;1:40:00 PM or 27.01.17;1:40:00 PM
 	# Convert the date and time to format: 2017-01-29T13:00:00
 	# There are problems with the SMA/solar-log time implementation:
 	time = fix_time(time, debug)	
-	new_datetime = datetime.datetime.strptime(date + " " + time, '%d/%m/%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
+	new_datetime = datetime.datetime.strptime(date_val + " " + time_val, '%d/%m/%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
 
 	return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
 					  str(error) + "," + str(pdc1) + "," + str(udc1) + "," + str(uac) + "," + str(idc1) + "," + str(iac) + "\n"
@@ -114,12 +114,12 @@ def REFUSOL_line(line, debug):
 	if (debug >= 2):
 		print "Raw Refusol line: ",line
 
-	date,time,inverter,power,daily,status,error,pdc1,udc1,temperature,uac = line.split(';')
+	date_val,time_val,inverter,power,daily,status,error,pdc1,udc1,temperature,uac = line.split(';')
 
 	# Date and time will be in the format: 01.04.17;12:05:00 or 01.04.17;04:25:00
 	# Convert the date and time to format: 2017-01-29T13:00:00
 	# Refusol has no problems with date and time
-	new_datetime = datetime.datetime.strptime(date + " " + time, '%d.%m.%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
+	new_datetime = datetime.datetime.strptime(date_val + " " + time_val, '%d.%m.%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
 
 	return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
 					  str(error) + "," + str(pdc1) + "," + str(udc1) + "," + str(temperature) + "," + str(uac) + "\n"
@@ -139,12 +139,12 @@ def ABB_line(line, debug):
 	if (debug >= 2):
 		print "Raw ABB line: ",line
 
-	date,time,inverter,power,daily,status,error,pdc1,pdc2,udc1,udc2,temperature,uac = line.split(';')
+	date_val,time_val,inverter,power,daily,status,error,pdc1,pdc2,udc1,udc2,temperature,uac = line.split(';')
 
 	# Date and time will be in the format: 04.04.17;12:05:00 or 01.04.17;04:25:00
 	# Convert the date and time to format: 2017-01-29T13:00:00
 	# ABB has no problems with date and time
-	new_datetime = datetime.datetime.strptime(date + " " + time, '%d.%m.%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
+	new_datetime = datetime.datetime.strptime(date_val + " " + time_val, '%d.%m.%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
 
 	return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
 					  str(error) + "," + str(pdc1) + "," + str(pdc2) + "," + str(udc1) + "," + str(udc2) + "," + str(temperature) + "," + \
@@ -160,8 +160,8 @@ def ABB_line(line, debug):
 # This function will split the inverters, so that date and time is in each line, but everything is in a separate line
 def split_inverters(line, inverter_type, debug, log_directory):
 	items = line.split(';')
-	date = items[0]
-	time = items[1]
+	date_val = items[0]
+	time_val = items[1]
 	del items[:2]
 
 	if (inverter_type == SMA):
@@ -197,8 +197,8 @@ def split_inverters(line, inverter_type, debug, log_directory):
 			if (debug >= 2):
 				print "Inverter slice: ",inverter_slice
 			del items[:item_number]
-			inverter_slice.insert(0, time)
-			inverter_slice.insert(0, date)
+			inverter_slice.insert(0, time_val)
+			inverter_slice.insert(0, date_val)
 			inverter_line = ";".join(inverter_slice)
 			inverter_number = inverter_slice[2]
 			if (inverter_type == REFUSOL):
@@ -217,10 +217,11 @@ def split_inverters(line, inverter_type, debug, log_directory):
 				print "Split line: ",converted_line
 
 			# Add inverter number to the log directory
-			log_directory = os.path.join(log_directory, inverter_number)
+			log_dir = ""
+			log_dir = os.path.join(log_directory, inverter_number)
 			date_str = time.strftime("%d-%b-%Y")
 			log_filename = date_str + ".csv"
-			write_log(log_directory, log_filename, header, converted_line, debug, True, log_directory, "latest.csv")
+			write_log(log_dir, log_filename, header, converted_line, debug, True, log_dir, "latest.csv")
 
 	else:
 		print "The line reported by solar-log is not recognised. Here is the line: ", line
