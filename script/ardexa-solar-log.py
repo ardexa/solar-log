@@ -332,8 +332,8 @@ def prepare_new(ip_addr, debug):
 			response.close()
 			attempt += 1
 			
-			# If it takes more than about 12 minutes, bail out
-			if (attempt > 72):
+			# If it takes more than about 8 minutes, bail out
+			if (attempt > 50):
 				complete = True
 
 	except:
