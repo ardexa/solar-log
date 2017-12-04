@@ -42,7 +42,7 @@ example: `python ardexa-solar-log.py 192.168.1.55 ABB new /opt/ardexa 0`
 ## Collecting to the Ardexa cloud
 Collecting to the Ardexa cloud is free for up to 3 Raspberry Pis (or equivalent). Ardexa provides free agents for ARM, Intel x86 and MIPS based processors. To collect the data to the Ardexa cloud do the following:
 - Create a `RUN` scenario to schedule the Ardexa Kaco script to run at regular intervals, but no less than about 330 seconds.
-- Then use a `CAPTURE` scenario to collect the csv (comma separated) data from the filename `/opt/ardexa/solar-log/logs/{inverter}/latest.csv`. This file contains a header entry (as the first line) that describes the CSV elements of the file.
+- Then use a `CAPTURE` scenario to collect the csv (comma separated) data from the filename `{log-directory}/{inverter type}/{inverter number}/latest.csv`. This file contains a header entry (as the first line) that describes the CSV elements of the file.
 
 ## Help
 Contact Ardexa at support@ardexa.com, and we'll do our best efforts to help.
