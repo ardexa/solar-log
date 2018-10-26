@@ -53,6 +53,8 @@ SMA = 'sma'
 ABB = 'abb'
 SOLARMAX = 'solarmax'
 
+DEBUG = 0
+
 # These next items detail the number of items in a **RAW** event line
 SMA_HEADER_ITEMS = 12
 ABB_HEADER_ITEMS = 13
@@ -426,6 +428,8 @@ CONFIG = click.make_pass_decorator(Config, ensure=True)
 @CONFIG
 def cli(config, verbose):
     """Command line entry point"""
+    global DEBUG
+    DEBUG = verbose
     config.verbosity = verbose
 
 
