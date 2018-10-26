@@ -41,6 +41,7 @@ setup(
         'ardexaplugin',
         'Click',
         'requests',
+        'python-dateutil',
     ],
 
     entry_points={
