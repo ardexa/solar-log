@@ -26,12 +26,12 @@ pip install .
 ## Usage
 Send production data to a file on disk 
 ```
-Usage: solarlog_ardexa log IP_address inverter_type old|new output_directory
-eg: solarlog_ardexa log 192.168.1.55 ABB new /opt/ardexa
+Usage: solarlog_ardexa log IP_address inverter_type output_directory [--old] [--skip-prep]
+eg: solarlog_ardexa log 192.168.1.55 ABB /opt/ardexa
 - The `IP Address` is the IP address of the Solar Log device. 
 - The `inverter-type` is either `Solarmax`, `SMA`, `ABB` or `Refusol` inverters. If you need other inverter types, contact us.
-- The 'solar log type is either `NEW` or `OLD`. Older Solar Log devices with a software firmware of less than about 3.0 (Build 60. March 2014), then that is an `OLD` version. Also note that the `OLD` style Solar Log devices may stop recording when the inverter is turned off (ie; when the Sun goes down), whereas the `NEW` inverters will write a record all times.
 - The `output_directory` is where data will be written.
+- Older Solar Log devices with a software firmware of less than about 3.0 (Build 60. March 2014) require the `--old` flag. Also note that the `OLD` style Solar Log devices may stop recording when the inverter is turned off (ie; when the Sun goes down), whereas the `NEW` inverters will write a record all times.
 ```
 
 To view debug output, increase the verbosity using the `-v` flag.
