@@ -21,7 +21,6 @@ eg: solarlog_ardexa log 192.168.1.55 ABB new /opt/ardexa
 #
 
 
-
 from __future__ import print_function
 import time
 import os
@@ -61,7 +60,6 @@ REFUSOL_HEADER_ITEMS = 11
 SOLARMAX_HEADER_ITEMS = 14
 
 
-
 def fix_time(sltime, debug):
     """ This will fix up the solar-log time. There are problems with it"""
     hour, minute, rest = sltime.split(':')
@@ -88,7 +86,6 @@ def fix_time(sltime, debug):
     return str(hour) + ":" + str(minute) + ":" + str(seconds)
 
 
-
 def sma_line(line, debug):
     """This function is for SMA inverters
         This function will strip an Inverter line reported by solar-log
@@ -107,13 +104,12 @@ def sma_line(line, debug):
     new_datetime = datetime.datetime.strptime(date_val + " " + time_val, '%d/%m/%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
 
     return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
-					  str(error) + "," + str(pdc1) + "," + str(udc1) + "," + str(uac) + "," + str(idc1) + "," + str(iac) + "\n"
+                  str(error) + "," + str(pdc1) + "," + str(udc1) + "," + str(uac) + "," + str(idc1) + "," + str(iac) + "\n"
 
     if debug >= 2:
         print("Writing the SMA line: ", return_line)
 
     return return_line
-
 
 
 def refusol_line(line, debug):
@@ -133,7 +129,7 @@ def refusol_line(line, debug):
     new_datetime = datetime.datetime.strptime(date_val + " " + time_val, '%d.%m.%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
 
     return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
-					  str(error) + "," + str(pdc1) + "," + str(udc1) + "," + str(temperature) + "," + str(uac) + "\n"
+                  str(error) + "," + str(pdc1) + "," + str(udc1) + "," + str(temperature) + "," + str(uac) + "\n"
 
     if debug >= 2:
         print("Writing the Resfusol line: ", return_line)
@@ -158,14 +154,13 @@ def abb_line(line, debug):
     new_datetime = datetime.datetime.strptime(date_val + " " + time_val, '%d.%m.%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
 
     return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
-					  str(error) + "," + str(pdc1) + "," + str(pdc2) + "," + str(udc1) + "," + str(udc2) + "," + str(temperature) + "," + \
-					  str(uac) + "\n"
+                  str(error) + "," + str(pdc1) + "," + str(pdc2) + "," + str(udc1) + "," + str(udc2) + "," + str(temperature) + "," + \
+                  str(uac) + "\n"
 
     if debug >= 2:
         print("Writing the ABB line: ", return_line)
 
     return return_line
-
 
 
 def solarmax_line(line, debug):
@@ -179,20 +174,19 @@ def solarmax_line(line, debug):
 
     date_val, time_val, inverter, power, daily, status, pdc1, pdc2, pdc3, udc1, udc2, udc3, temperature, uac = line.split(';')
 
-	# Date and time will be in the format: 13.03.18;13:30:00
-	# Convert the date and time to format: 2017-01-29T13:00:00Z
-	# ABB has no problems with date and time
+    # Date and time will be in the format: 13.03.18;13:30:00
+    # Convert the date and time to format: 2017-01-29T13:00:00Z
+    # ABB has no problems with date and time
     new_datetime = datetime.datetime.strptime(date_val + " " + time_val, '%d.%m.%y  %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S%z')
 
     return_line = str(new_datetime) + "," + str(inverter) + "," + str(power) + "," + str(daily) + "," + str(status) + "," + \
-					  str(pdc1) + "," + str(pdc2) + "," + str(pdc3) + "," + str(udc1) + "," + str(udc2) + "," + str(udc3) + "," + str(temperature) + "," + \
-					  str(uac) + "\n"
+                  str(pdc1) + "," + str(pdc2) + "," + str(pdc3) + "," + str(udc1) + "," + str(udc2) + "," + str(udc3) + "," + str(temperature) + "," + \
+                  str(uac) + "\n"
 
     if debug >= 2:
         print("Writing the Solarmax line: ", return_line)
 
     return return_line
-
 
 
 def split_inverters(line, inverter_type, debug, log_directory):
@@ -271,9 +265,6 @@ def split_inverters(line, inverter_type, debug, log_directory):
     else:
         print("The line reported by solar-log is not recognised. Here is the line: ", line)
 
-    return
-
-
 
 def query_csv(current, ip_addr, debug):
     """ This function will query the latest solar-log CSV file"""
@@ -317,14 +308,13 @@ def query_csv(current, ip_addr, debug):
                 # if so, try a different URL
                 if debug >= 2:
                     print("Error for downloading the CSV file with URL:", url2)
-            
+
     except:
         # The script does sometimes return with general error, due to unknown solar-log issues
         if debug >= 2:
             print("Error in main URL CSV download request loop")
 
     return success
-
 
 
 
@@ -362,7 +352,6 @@ def extract_latest_lines(last, current, inverter_type, debug, log_directory):
         copyfile(current, last)
 
     return
-
 
 
 def prepare_new(ip_addr, debug):
@@ -409,7 +398,6 @@ def prepare_new(ip_addr, debug):
             print("404 error for \'prepare\'\n")
 
 
-
 def prepare_old(ip_addr, debug):
     """ For the old types of Solar Log, issue a prepare URL and wait about 10 minutes"""
 
@@ -441,7 +429,6 @@ def cli(config, verbose):
     config.verbosity = verbose
 
 
-
 @cli.command()
 @click.argument('ip_address')
 @click.argument('inverter_type')
@@ -463,17 +450,16 @@ def log(config, ip_address, inverter_type, solar_log_type, output_directory):
         sys.exit(3)
 
     solar_log_type = solar_log_type.lower()
-    if (solar_log_type != 'old') and (solar_log_type != 'new'):
+    if solar_log_type not in ('old', 'new'):
         print("Solar Log Type can only be \'NEW\' or \'OLD\'")
         sys.exit(7)
 
     inverter_type = inverter_type.lower()
-    if (inverter_type != SMA) and (inverter_type != REFUSOL) and (inverter_type != ABB) and (inverter_type != SOLARMAX):
+    if inverter_type not in (SMA, REFUSOL, ABB, SOLARMAX):
         print("Only Solarmax, Refusol, ABB or SMA inverters collected by Solar-Log are supported at this time")
         sys.exit(8)
 
     start_time = time.time()
-
 
     # Issue a query to get the solar-log to 'prepare' the CSV file
     if solar_log_type == 'new':
@@ -493,7 +479,6 @@ def log(config, ip_address, inverter_type, solar_log_type, output_directory):
         # New lines will then be written to file
         extract_latest_lines(last_file, current_file, inverter_type, config.verbosity, output_directory)
 
-
     elapsed_time = time.time() - start_time
     if config.verbosity > 0:
         print("This request took: ", elapsed_time, " seconds.")
@@ -501,5 +486,3 @@ def log(config, ip_address, inverter_type, solar_log_type, output_directory):
     # Remove the PID file
     if os.path.isfile(pidfile):
         os.unlink(pidfile)
-
-
