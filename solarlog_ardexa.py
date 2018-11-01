@@ -252,7 +252,7 @@ def extract_latest_lines(current, inverter_type, log_directory):
     if most_recent_timestamp is not None:
         try:
             with open(checkpoint_file, 'w') as last_reading_file:
-                last_reading_file.write(most_recent_timestamp)
+                last_reading_file.write(most_recent_timestamp.strftime('%Y-%m-%dT%H:%M:%S'))
         except FileNotFoundError:
             print("ERROR: Failed to update LAST reading state")
 
