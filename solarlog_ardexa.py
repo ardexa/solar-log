@@ -204,7 +204,7 @@ def parse_time(inverter_type, date_val, time_val):
     return datetime.datetime.strptime(date_val + " " + time_val, '%d.%m.%y  %H:%M:%S')
 
 
-def extract_latest_lines(current, inverter_type, log_directory):
+def extract_latest_lines(current, inverter_type, log_directory, debug):
     """ This function will extract any new lines. If there is a last_reading file, it will read through the current file logging all newer entries and then quit when it finds a time beyond this. If there is no last_reading, it will simply log the latest reading only and then quit"""
 
     checkpoint_file = os.path.join(log_directory, LAST_READING)
@@ -235,7 +235,7 @@ def extract_latest_lines(current, inverter_type, log_directory):
                 timestamp_with_tz = line_timestamp.strftime('%Y-%m-%dT%H:%M:%S') + time.strftime("%z")
 
                 if last_timestamp is None or line_timestamp > last_timestamp:
-                    if DEBUG:
+                    if debug >= 1:
                         print("New Line at time: {} Line: {}".format(timestamp_with_tz, ",".join(record)))
 
                     process_inverters(timestamp_with_tz, record, inverter_type, log_directory)
@@ -378,7 +378,7 @@ def log(config, ip_address, inverter_type, output_directory, old, skip_prep):
     if success:
         # If CSV file could be extracted, compare this run to the last
         # New lines will then be written to file
-        extract_latest_lines(current_file, inverter_type, output_directory)
+        extract_latest_lines(current_file, inverter_type, output_directory, config.verbosity)
 
     elapsed_time = time.time() - start_time
     if config.verbosity > 0:
