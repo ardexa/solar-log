@@ -227,6 +227,10 @@ def extract_latest_lines(current, inverter_type, log_directory, debug):
             for line in current_file:
                 if line[0] == '#':
                     continue
+                
+                if debug >= 2:
+                        print("Current Line:", line)
+
                 record = line.strip().split(';')
                 date_val = record.pop(0)
                 time_val = record.pop(0)
