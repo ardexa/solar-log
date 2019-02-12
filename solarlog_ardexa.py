@@ -149,8 +149,8 @@ def query_csv(current, ip_addr, debug):
 
     success = False
 
-    url1 = 'http://' + ip_addr + '/export_min.csv'
-    url2 = 'http://' + ip_addr + '/sec/export_min.csv'
+    url1 = 'http://' + ip_addr + '/sec/export_min.csv'
+    url2 = 'http://' + ip_addr + '/export_min.csv'
     if debug >= 2:
         print("URL being used for CSV download: ", url1)
 
@@ -222,14 +222,14 @@ def extract_latest_lines(current, inverter_type, log_directory, debug):
     except:
         pass
 
+    if debug >= 1:
+        print("Last Timestamp:", last_timestamp)
+
     try:
         with open(current, 'r') as current_file:
             for line in current_file:
                 if line[0] == '#':
-                    continue
-                
-                if debug >= 2:
-                        print("Current Line:", line)
+                    continue               
 
                 record = line.strip().split(';')
                 date_val = record.pop(0)
@@ -237,6 +237,12 @@ def extract_latest_lines(current, inverter_type, log_directory, debug):
                 line_timestamp = parse_time(inverter_type, date_val, time_val)
                 # Times from solarlog are local, attach a timezone
                 timestamp_with_tz = line_timestamp.strftime('%Y-%m-%dT%H:%M:%S') + time.strftime("%z")
+
+                if debug >= 1:
+                    print("Current line Timestamp:", line_timestamp)
+                    print("Current line Timestamp_tz:", timestamp_with_tz)
+                if debug >= 2:
+                    print("Current Line:", line)
 
                 if last_timestamp is None or line_timestamp > last_timestamp:
                     if debug >= 1:
