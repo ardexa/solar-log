@@ -43,15 +43,21 @@ PIDFILE = 'ardexa-solar-log-'
 LAST_READING = 'last.txt'
 CURRENT = 'current.csv'
 COMPLETE_STRING = "\"777\":3,"
-SMA_LOG_HEADER_LST = ["Datetime", "Inverter", "AC power (W)", "Daily Energy (Wh)", "Status", "Error", "DC Power 1 (W)",
-                      "DC Voltage 1 (V)", "AC Voltage (V)", "DC Current 1 (A)", "AC Current (A)"]
-REFUSOL_LOG_HEADER_LST = ["Datetime", "Inverter", "AC power (W)", "Daily Energy (Wh)", "Status", "Error", "DC Power 1 (W)",
-                          "DC Voltage 1 (V)", "Temperature (C)", "AC Voltage (V)"]
-ABB_LOG_HEADER_LST = ["Datetime", "Inverter", "AC power (W)", "Daily Energy (Wh)", "Status", "Error", "DC Power 1 (W)",
-                      "DC Power 2 (W)", "DC Voltage 1 (V)", "DC Voltage 2 (V)", "Temperature (C)", "AC Voltage (V)"]
-SOLARMAX_LOG_HEADER_LST = ["Datetime", "Inverter", "AC power (W)", "Daily Energy (Wh)", "Status", "DC Power 1 (W)",
-                           "DC Power 2 (W)", "DC Power 3 (W)", "DC Voltage 1 (V)", "DC Voltage 2 (V)", "DC Voltage 3 (V)",
-                           "Temperature (C)", "AC Voltage (V)"]
+HEADER_LST = {
+    "sma": [
+        "Datetime", "Inverter", "AC power (W)", "Daily Energy (Wh)", "Status", "Error", "DC Power 1 (W)",
+        "DC Voltage 1 (V)", "AC Voltage (V)", "DC Current 1 (A)", "AC Current (A)"],
+    "refusol": [
+        "Datetime", "Inverter", "AC power (W)", "Daily Energy (Wh)", "Status", "Error", "DC Power 1 (W)",
+        "DC Voltage 1 (V)", "Temperature (C)", "AC Voltage (V)"],
+    "abb": [
+        "Datetime", "Inverter", "AC power (W)", "Daily Energy (Wh)", "Status", "Error", "DC Power 1 (W)",
+        "DC Power 2 (W)", "DC Voltage 1 (V)", "DC Voltage 2 (V)", "Temperature (C)", "AC Voltage (V)"],
+    "solarmax": [
+        "Datetime", "Inverter", "AC power (W)", "Daily Energy (Wh)", "Status", "DC Power 1 (W)",
+        "DC Power 2 (W)", "DC Power 3 (W)", "DC Voltage 1 (V)", "DC Voltage 2 (V)", "DC Voltage 3 (V)",
+        "Temperature (C)", "AC Voltage (V)"],
+}
 
 REFUSOL = 'refusol'
 SMA = 'sma'
@@ -137,7 +143,7 @@ def process_inverters(timestamp_with_tz, items, inverter_type, log_directory):
         inverter_slice.insert(0, timestamp_with_tz)
 
         converted_line = ",".join(inverter_slice) + "\n"
-        header = "# " + ",".join(REFUSOL_LOG_HEADER_LST) + "\n"
+        header = "# " + ",".join(HEADER_LST[inverter_type]) + "\n"
 
         # Add inverter number to the log directory
         log_dir = os.path.join(log_directory, inverter_number)
