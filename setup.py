@@ -16,7 +16,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='solarlog_ardexa',
-    version='2.0.11',
+    version='2.0.12',
     description='Collect from Solar Log devices and send the data to your cloud using Ardexa',
     long_description=long_description,
     long_description_content_type='text/markdown',

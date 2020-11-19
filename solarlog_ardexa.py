@@ -119,9 +119,9 @@ def process_inverters(timestamp_with_tz, items, inverter_type, log_directory):
 
     if DEBUG >= 2:
         print("Inverter type: " + inverter_type)
-        print("Item count: " + num_items)
-        print("Inverter count: " + inverter_count)
-        print("Items: " + items)
+        print("Item count: " + str(num_items))
+        print("Inverter count: " + str(inverter_count))
+        print("Items: " + str(items))
 
     if remainder != 0:
         print("The line reported by solar-log is not recognised. Here is the line: {}".format(",".join(items)))
