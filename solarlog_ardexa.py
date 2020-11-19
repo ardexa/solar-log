@@ -308,8 +308,8 @@ def prepare_new(ip_addr, debug):
             response.close()
             attempt += 1
 
-            # If it takes more than about 8 minutes, bail out
-            if attempt > 50:
+            # If it takes more than about 16 minutes (1000 secs), bail out
+            if attempt > 100:
                 complete = True
 
     except:
